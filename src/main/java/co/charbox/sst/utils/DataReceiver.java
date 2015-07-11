@@ -22,6 +22,7 @@ public class DataReceiver implements Runnable {
 	}
 
 	public void run() {
+		log.debug("receiving " + size);
 		long currSize = 0;
 		long startTime = System.currentTimeMillis();
 		long loopCount = 0;
