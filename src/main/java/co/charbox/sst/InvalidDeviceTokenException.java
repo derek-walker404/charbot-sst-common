@@ -1,4 +1,4 @@
-package co.charbot.sst;
+package co.charbox.sst;
 
 import java.io.Serializable;
 

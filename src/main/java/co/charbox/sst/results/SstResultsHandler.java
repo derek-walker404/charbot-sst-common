@@ -1,4 +1,4 @@
-package co.charbot.sst.results;
+package co.charbox.sst.results;
 
 import java.net.Socket;
 

@@ -1,4 +1,4 @@
-package co.charbot.sst.utils;
+package co.charbox.sst.utils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
