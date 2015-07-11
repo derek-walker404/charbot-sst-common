@@ -38,10 +38,12 @@ public class DataReceiver implements Runnable {
 				throw new RuntimeException("Something went wrong. Size is less than 0.");
 			}
 			try {
-				int bytesReceived = io.readAndForget();
-				currSize += bytesReceived;
-				if (bytesReceived > 0) {
-					loopCount = 0;
+				if (io.available() > 0) {
+					int bytesReceived = io.readAndForget();
+					currSize += bytesReceived;
+					if (bytesReceived > 0) {
+						loopCount = 0;
+					}
 				}
 			} catch (IOException e) {
 				log.error(e.getMessage());

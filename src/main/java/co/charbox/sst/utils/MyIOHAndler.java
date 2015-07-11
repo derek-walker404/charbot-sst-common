@@ -31,6 +31,10 @@ public class MyIOHAndler {
 		}
 	}
 	
+	public int available() throws IOException {
+		return bis.available();
+	}
+	
 	public void write(long i, boolean assertValue) throws IOException {
 		write(i + "", assertValue);
 	}
