@@ -27,10 +27,12 @@ public class DataSender implements Runnable {
 			while (currSize < size) {
 					io.write(rawData, length);
 					currSize += length;
+					log.debug("sent " + currSize);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		log.debug("Sent " + size);
 	}
 
 }
