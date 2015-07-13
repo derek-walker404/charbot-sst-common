@@ -3,6 +3,8 @@ package co.charbox.sst.utils;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 import lombok.extern.slf4j.Slf4j;
@@ -10,15 +12,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MyIOHAndler {
 
-	private final BufferedOutputStream bos;
-	private final BufferedInputStream bis;
+	private final OutputStream os;
+	private final InputStream is;
 	private byte[] readBuffer;
 	private int currBufferLength;
 	private String remoteIp;
 	
 	public MyIOHAndler(Socket sock, int readBufferSize) throws IOException {
-		this.bos = new BufferedOutputStream(sock.getOutputStream());
-		this.bis = new BufferedInputStream(sock.getInputStream());
+		this.os = new BufferedOutputStream(sock.getOutputStream());
+		this.is = new BufferedInputStream(sock.getInputStream());
 		this.readBuffer = new byte[readBufferSize];
 		this.currBufferLength = 0;
 		this.remoteIp = sock.getRemoteSocketAddress().toString();
@@ -32,7 +34,7 @@ public class MyIOHAndler {
 	}
 	
 	public int available() throws IOException {
-		return bis.available();
+		return is.available();
 	}
 	
 	public void write(long i, boolean assertValue) throws IOException {
@@ -51,8 +53,8 @@ public class MyIOHAndler {
 	}
 	
 	public void write(byte[] arr, int length) throws IOException {
-		bos.write(arr, 0, length);
-		bos.flush();
+		os.write(arr, 0, length);
+		os.flush();
 	}
 	
 	public String read(boolean assertValue) {
@@ -79,7 +81,7 @@ public class MyIOHAndler {
 		int endIndex = currBufferLength;
 		readLoop:
 		while (length <= 0) {
-			length += bis.read(arr, length, arr.length - length);
+			length += is.read(arr, length, arr.length - length);
 			for (int i=0;i<length;i++) {
 				if (arr[i] == '\n') {
 					endIndex = i;
@@ -129,7 +131,7 @@ public class MyIOHAndler {
 	
 	public int readAndForget() throws IOException {
 		currBufferLength = 0;
-		return read(readBuffer);
+		return (int)is.skip(available());
 	}
 	
 	public int read(byte[] arr) throws IOException {
@@ -140,7 +142,7 @@ public class MyIOHAndler {
 				loopCount = 0;
 				log.warn("Wheels spinning");
 			}
-			length = bis.read(arr, length, arr.length - length);
+			length = is.read(arr, length, arr.length - length);
 		}
 		return length;
 	}
@@ -168,8 +170,8 @@ public class MyIOHAndler {
 	}
 	
 	public void close() throws IOException {
-		bos.close();
-		bis.close();
+		os.close();
+		is.close();
 	}
 
 	public String getRemoteIp() {

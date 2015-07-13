@@ -2,9 +2,7 @@ package co.charbox.sst.utils;
 
 import java.io.IOException;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
+//@Slf4j
 public class DataSender implements Runnable {
 
 	private MyIOHAndler io;
@@ -19,7 +17,7 @@ public class DataSender implements Runnable {
 	}
 
 	public void run() {
-		log.debug("Sending " + size);
+//		log.debug("Sending " + size);
 		try {
 			long currSize = 0;
 			byte[] rawData = data.getBytes();
@@ -27,12 +25,12 @@ public class DataSender implements Runnable {
 			while (currSize < size) {
 					io.write(rawData, length);
 					currSize += length;
-					log.debug("sent " + currSize);
+//					log.debug("sent " + currSize);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		log.debug("Sent " + size);
+//		log.debug("Sent " + size);
 	}
 
 }
