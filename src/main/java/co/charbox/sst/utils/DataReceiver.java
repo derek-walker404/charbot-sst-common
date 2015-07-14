@@ -22,31 +22,29 @@ public class DataReceiver implements Runnable {
 	}
 
 	public void run() {
-//		log.debug("receiving " + size);
-		long currSize = 0;
+		log.debug("receiving " + size);
+		long bytesLeft = size;
 		long startTime = System.currentTimeMillis();
 		long loopCount = 0;
-		int bytesReceived;
-		while (currSize < size) {
+		long bytesReceived;
+		while (bytesLeft > 0) {
 			if (loopCount++ >= 1000000) {
 				loopCount = 0;
-				log.warn("Wheels Spinning! currSize: " + currSize + " expectedSize: " + size);
+				log.warn("Wheels Spinning! bytesLeft: " + bytesLeft + " expectedSize: " + size);
 				if (System.currentTimeMillis() - startTime > 5000) {
-					log.error("Failing data receiver! currSize: " + currSize + " expectedSize: " + size);
+					log.error("Failing data receiver! bytesLeft: " + bytesLeft + " expectedSize: " + size);
 					this.duration = -1;
 					return;
 				}
 			}
-			if (currSize < 0) {
-				throw new RuntimeException("Something went wrong. Size is less than 0.");
+			if (bytesLeft < 0 || bytesLeft > size) {
+				throw new RuntimeException("Something went wrong. bytesLeft: " + bytesLeft + " expectedSize: " + size);
 			}
 			try {
-				if (io.available() > 0) {
-					bytesReceived = io.readAndForget();
-					currSize += bytesReceived;
-					if (bytesReceived > 0) {
-						loopCount = 0;
-					}
+				bytesReceived = io.skip(bytesLeft);
+				bytesLeft -= bytesReceived;
+				if (bytesReceived > 0) {
+					loopCount = 0;
 				}
 			} catch (IOException e) {
 				log.error(e.getMessage());

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import co.charbox.sst.SSTProperties;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -115,7 +116,7 @@ public class MyIOHAndler {
 		}
 		int firstNonZero = 0;
 		for(int i=0;i<currBufferLength;i++) {
-			if (readBuffer[i] != '0') {
+			if (readBuffer[i] != SSTProperties.DATA_CHAR) {
 				firstNonZero = i;
 				break;
 			}
@@ -129,9 +130,11 @@ public class MyIOHAndler {
 		}
 	}
 	
-	public int readAndForget() throws IOException {
+	public long skip(long n) throws IOException {
+		int currLength = currBufferLength;
 		currBufferLength = 0;
-		return (int)is.skip(available());
+		cleanBuffer();
+		return (int)is.skip(available()) + currLength;
 	}
 	
 	public int read(byte[] arr) throws IOException {
